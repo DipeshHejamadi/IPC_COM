@@ -1,0 +1,66 @@
+########################################################################################################################################################################################################
+IPC (Inter-Process Communication)
+stack is designed to provide service discovery using shared memory.
+########################################################################################################################################################################################################
+
+Here's how the code works step by step:
+
+1. Daemon Initialization
+Daemon (daemon.cpp):
+The daemon is a central service registry that runs in its own process.
+It manages the registration and discovery of services.
+When the daemon starts, it initializes the service registry and begins listening for incoming requests from the offerservice_API and findservice_API.
+
+2. Offer Service Process
+Offer Service (offerservice_API.cpp):
+The server application calls the offerservice_API to offer a service.
+This API communicates with the daemon via shared memory, mediated by the offerservice_interface.
+OfferService Interface (offerservice_interface.h):
+The offerservice_interface is an abstract layer that facilitates the communication between the offerservice_API and the daemon.
+It writes the service offer information into shared memory.
+The daemon reads from the shared memory and registers the service in its internal service registry.
+
+3. Find Service Process
+Find Service (findservice_API.cpp):
+The client application calls the findservice_API to check if a specific service is available.
+Similar to the offerservice_API, this API communicates with the daemon via shared memory, mediated by the findservice_interface.
+FindService Interface (findservice_interface.h):
+The findservice_interface acts as a mediator for communication between the findservice_API and the daemon.
+It queries the shared memory for service availability.
+The daemon checks its service registry for the requested service and returns the result via shared memory to the findservice_API.
+
+4. Shared Memory Communication
+Shared Memory:
+Both offerservice_API and findservice_API communicate with the daemon through shared memory.
+Shared memory allows different processes to access the same memory space, enabling inter-process communication without using network sockets or other IPC mechanisms.
+
+5. Service Registry Management
+Service Registry (service_registry.cpp):
+The service registry is managed by the daemon.
+It stores the list of services offered by the offerservice_API.
+When a client application queries a service using findservice_API, the service registry checks for the service and provides the result.
+
+########################################################################################################################################################################################################
+
+How the Processes Interact
+Starting the Daemon:
+
+The daemon initializes the service registry and starts listening for service offers and queries.
+
+Offering a Service:
+
+A server application calls offerservice_API, which uses shared memory to send the service information to the daemon.
+The daemon registers this service in its service registry.
+
+Finding a Service:
+
+A client application calls findservice_API, which queries the daemon via shared memory.
+The daemon checks if the requested service is available in its registry and returns the result.
+
+########################################################################################################################################################################################################
+
+Example Workflow
+Start the Daemon: The daemon is started and is now ready to manage services.
+Server Offers a Service: The server application offers a service by calling offerservice_API. This service is registered in the daemon's service registry.
+Client Requests a Service: The client application calls findservice_API to check if the service is available. The daemon checks its registry and responds with the status of the service.
+This setup allows for a robust and efficient IPC mechanism that mimics the service discovery process in Adaptive AUTOSAR, using shared memory for communication between different processes.

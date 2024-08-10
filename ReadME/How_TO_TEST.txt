@@ -1,0 +1,8 @@
+cd /workspaces/IPC_COM/build
+./daemon
+
+cd /workspaces/IPC_COM/build
+./offer_service
+
+cd /workspaces/IPC_COM/build
+./find_service
