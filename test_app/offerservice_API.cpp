@@ -1,9 +1,11 @@
 #include <iostream>
-#include "offerservice_interface.h"
+#include "../include/skeleton/offerservice_interface.h"
 
+using namespace ipc;
 int main() {
     try {
-        offerservice(); // Call the API to register a service
+        std::string serviceName = "IPC";
+        sendOfferServiceRequest(serviceName); // Call the API to register a service
         std::cout << "Service registered successfully." << std::endl;
     } catch (const std::exception& e) {
         std::cerr << "Failed to register service: " << e.what() << std::endl;
